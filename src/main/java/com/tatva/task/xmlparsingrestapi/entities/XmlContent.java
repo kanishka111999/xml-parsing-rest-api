@@ -1,8 +1,5 @@
 package com.tatva.task.xmlparsingrestapi.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 /**
@@ -11,8 +8,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="xml_content")
-@Getter
-@Setter
 public class XmlContent {
 
 
@@ -39,6 +34,63 @@ public class XmlContent {
         this.height = height;
         this.dpi = dpi;
         this.uploadTime = uploadTime;
+        this.filename = filename;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNewspaperName() {
+        return newspaperName;
+    }
+
+    public void setNewspaperName(String newspaperName) {
+        this.newspaperName = newspaperName;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getDpi() {
+        return dpi;
+    }
+
+    public void setDpi(int dpi) {
+        this.dpi = dpi;
+    }
+
+    public LocalDateTime getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(LocalDateTime uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
         this.filename = filename;
     }
 }
