@@ -27,7 +27,7 @@ public class XmlContent {
 
     }
 
-
+    //Argument Constructor to initialize the value of all attributes.
     public XmlContent(String newspaperName, int width, int height, int dpi, LocalDateTime uploadTime, String filename) {
         this.newspaperName = newspaperName;
         this.width = width;
@@ -37,7 +37,7 @@ public class XmlContent {
         this.filename = filename;
     }
 
-
+    //Getters and Setters Method for all attributes.
     public Long getId() {
         return id;
     }
