@@ -12,16 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
+
 /**
- * @Controller Class to for Request Mapping which
- * is containing get and post mapping.
+ * @Controller Class to for Request Mapping which is containing get and post mapping.
  */
-
-
 @RestController
 @RequestMapping("/xml")
 public class XmlUploadController {
@@ -31,7 +28,12 @@ public class XmlUploadController {
     @Autowired
     private XmlRepository xmlRepository;
 
-    //post mapping for uploading the xml file
+    /**
+     * Post mapping for uploading the xml file
+     *
+     * @param file newspaper.xml
+     * @return the response entity
+     */
     @PostMapping("/upload")
     public ResponseEntity<String> uploadXmlFile(@RequestParam("file") MultipartFile file) {
         try {
@@ -43,7 +45,15 @@ public class XmlUploadController {
         }
     }
 
-    //get mapping for fetching and filtering and sorting
+    /**
+     * Gets xml content for fetching and filtering and sorting.
+     *
+     * @param page     0
+     * @param size     10
+     * @param sortBy   attributes
+     * @param filterBy the filter by newspaername
+     * @return the xml content
+     */
     @GetMapping("/xml-content")
     public ResponseEntity<Page<XmlContent>> getXmlContent(
             @RequestParam(defaultValue = "0") int page,
@@ -62,7 +72,11 @@ public class XmlUploadController {
         }
     }
 
-    //To get xml content stored on database
+    /**
+     * To Get xml content stored on database
+     *
+     * @return the all xml content
+     */
     @GetMapping("/get-xml-content")
     public ResponseEntity<List<XmlContent>> getAllXmlContent()
     {

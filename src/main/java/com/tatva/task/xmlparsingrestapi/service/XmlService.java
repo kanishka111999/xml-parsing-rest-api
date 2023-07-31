@@ -11,7 +11,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.stream.StreamSource;
@@ -23,13 +22,23 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * @Service layer which contains functionality of uploading and sorting,
+ * filtering and paging of Xml Content.
+ */
 @Service
 public class XmlService {
 
     @Autowired
     private XmlRepository xmlRepository;
 
-    // Method to get XML content with filtering and pagination
+    /**
+     * Gets xml content with filtering and pagination.
+     *
+     * @param filterBy the filter by Newspapername
+     * @param pageable the pageable 10
+     * @return the xml content with filtering and pagination
+     */
     public Page<XmlContent> getXmlContentWithFilteringAndPagination(String filterBy, Pageable pageable) {
         if (filterBy != null && !filterBy.isEmpty()) {
             // Perform filtering based on the "Newspaper Name" field
@@ -40,24 +49,33 @@ public class XmlService {
         }
     }
 
-    //return the all xmlContent records
+    /**
+     * Gets xml content stored in database.
+     * @return the xml content in json.
+     */
     public List<XmlContent> getXmlContent()
     {
         return xmlRepository.findAll();
     }
 
-    //method to process xml file
+    /**
+     * Process xml file uploaded and parse and validate it and
+     * save the xml element in the database.
+     * @param file the newspaper.xml
+     * @throws IOException the io exception if any process terminates.
+     */
     public void processXmlFile(MultipartFile file) throws IOException {
-        // Validate XML against XSD schema
         validateXmlAgainstXsd(file);
-
-        // Parse and extract data from XML
         XmlContent xmlContent = parseXml(file);
-
-        // Save data to the database
         xmlRepository.save(xmlContent);
     }
 
+    /**
+     * Validate xml against xsd.
+     *
+     * @param file the newspaper.xml
+     * @throws IOException the io exception
+     */
     public void validateXmlAgainstXsd(MultipartFile file) throws IOException {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
@@ -70,6 +88,12 @@ public class XmlService {
         }
     }
 
+    /**
+     * Parse the xml content which is uploaded.
+     * @param file newspaper.xml
+     * @return the xml content
+     * @throws IOException the io exception
+     */
     public XmlContent parseXml(MultipartFile file) throws IOException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -93,6 +117,13 @@ public class XmlService {
         }
     }
 
+    /**
+     * Gets element text.
+     *
+     * @param element Device
+     * @param tagName DeviceInfo
+     * @return height width dpi of deviceInfo
+     */
     public String getElementText(Element element, String tagName) {
         NodeList nodeList = element.getElementsByTagName(tagName);
         return nodeList.getLength() > 0 ? nodeList.item(0).getTextContent() : null;
