@@ -24,6 +24,26 @@
         <label for="filterBy">Filter By Newspaper Name:</label>
         <input type="text" class="form-control" id="filterBy">
     </div>
+
+    <div class="form-group">
+        <label for="filterByWidth">Filter By Width:</label>
+        <input type="number" class="form-control" id="filterByWidth">
+    </div>
+
+    <div class="form-group">
+        <label for="filterByHeight">Filter By Height:</label>
+        <input type="number" class="form-control" id="filterByHeight">
+    </div>
+
+    <div class="form-group">
+        <label for="filterByDpi">Filter By DPI:</label>
+        <input type="number" class="form-control" id="filterByDpi">
+    </div>
+
+    <div class="form-group">
+        <label for="filterByFilename">Filter By Filename:</label>
+        <input type="text" class="form-control" id="filterByFilename">
+    </div>
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
@@ -55,6 +75,7 @@
     var pageSize = 10;
     var xmlContentPage; // Variable to store the fetched XML content page
 
+
     // Function to fetch XML content based on sorting, paging, and filtering parameters
     function fetchXmlContent() {
         $.ajax({
@@ -64,7 +85,12 @@
                 page: currentPage,
                 size: pageSize,
                 sortBy: $('#sortBy').val(),
-                filterBy: $('#filterBy').val()
+                filterBy: $('#filterBy').val(),
+                width : $('#filterByWidth').val(),
+                height: $('#filterByHeight').val(),
+                dpi: $('#filterByDpi').val(),
+                filename:$('#filterByFilename').val()
+
             },
             dataType: 'json',
             success: function (data) {
@@ -129,6 +155,30 @@
 
     // Filter by Newspaper Name input change event
     $('#filterBy').on('input', function () {
+        currentPage = 0;
+        fetchXmlContent();
+    });
+
+        // Filter by Width input change event
+    $('#filterByWidth').on('input', function () {
+        currentPage = 0;
+        fetchXmlContent();
+    });
+
+    // Filter by Height input change event
+    $('#filterByHeight').on('input', function () {
+        currentPage = 0;
+        fetchXmlContent();
+    });
+
+    // Filter by DPI input change event
+    $('#filterByDpi').on('input', function () {
+        currentPage = 0;
+        fetchXmlContent();
+    });
+
+    // Filter by Filename input change event
+    $('#filterByFilename').on('input', function () {
         currentPage = 0;
         fetchXmlContent();
     });

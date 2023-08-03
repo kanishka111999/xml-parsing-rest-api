@@ -1,87 +1,53 @@
 package com.tatva.task.xmlparsingrestapi.controller;
 
+import com.tatva.task.xmlparsingrestapi.dto.PaginationRequestDTO;
+import com.tatva.task.xmlparsingrestapi.dto.XmlContentDTO;
 import com.tatva.task.xmlparsingrestapi.entities.XmlContent;
-import com.tatva.task.xmlparsingrestapi.repository.XmlRepository;
-import com.tatva.task.xmlparsingrestapi.service.XmlService;
+import com.tatva.task.xmlparsingrestapi.exception.XmlProcessingException;
+import com.tatva.task.xmlparsingrestapi.service.XmlServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
 
 
-/**
- * @Controller Class to for Request Mapping which is containing get and post mapping.
+/* @Controller Class to for Request Mapping
+ * which is containing get and post mapping.
  */
 @RestController
 @RequestMapping("/xml")
 public class XmlUploadController {
     @Autowired
-    private XmlService xmlService;
+    private XmlServiceImpl xmlService;
 
-    @Autowired
-    private XmlRepository xmlRepository;
 
-    /**
-     * Post mapping for uploading the xml file
-     *
-     * @param file newspaper.xml
-     * @return the response entity
-     */
+    /* This Method is For uploading the xml file through xml/upload endpoints */
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadXmlFile(@RequestParam("file") MultipartFile file) {
-        try {
+    public ResponseEntity<String> uploadXmlFile(final @RequestParam("file") MultipartFile file) throws IOException,SAXException,ParserConfigurationException{
             xmlService.processXmlFile(file);
             return ResponseEntity.ok("XML file uploaded and processed successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error uploading the XML file.");
-        }
+
     }
 
-    /**
-     * Gets xml content for fetching and filtering and sorting.
-     *
-     * @param page     0
-     * @param size     10
-     * @param sortBy   attributes
-     * @param filterBy the filter by newspaername
-     * @return the xml content
-     */
+
+    /* This Method is For getting all xml-content with specific filtering, sorting and pagination methods */
     @GetMapping("/xml-content")
     public ResponseEntity<Page<XmlContent>> getXmlContent(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String filterBy
+            @ModelAttribute XmlContentDTO filterDTO,
+            @ModelAttribute PaginationRequestDTO paginationRequest
     ) {
-        try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-            Page<XmlContent> xmlContentPage = xmlService.getXmlContentWithFilteringAndPagination(filterBy, pageable);
-            System.out.println(xmlContentPage);
-            return ResponseEntity.ok(xmlContentPage);
-        } catch (Exception e) {
-            // Handle the exception and return an error response
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        final Pageable pageable = PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize(), Sort.by(paginationRequest.getSortBy()));
+        Page<XmlContent> xmlContentPage = xmlService.getXmlContentWithFilteringAndPagination(filterDTO, pageable);
+        return ResponseEntity.ok(xmlContentPage);
     }
 
-    /**
-     * To Get xml content stored on database
-     *
-     * @return the all xml content
-     */
-    @GetMapping("/get-xml-content")
-    public ResponseEntity<List<XmlContent>> getAllXmlContent()
-    {
-       List<XmlContent> xmlContent= xmlService.getXmlContent();
-       return new ResponseEntity<List<XmlContent>>(xmlContent,HttpStatus.OK);
-    }
 
 }
